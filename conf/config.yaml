@@ -1,7 +1,7 @@
 server:
   name: dataApi
-  httpListen: 192.168.2.105:10106
-  logPath: D:\GoProject\logs\
+  httpListen: 192.168.0.105:10106
+  logPath: E:\goprojectr\logs\
   privateHttpListen: 0.0.0.0:8081
   debug: true
 mysql:
