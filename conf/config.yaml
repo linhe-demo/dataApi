@@ -1,0 +1,16 @@
+server:
+  name: dataApi
+  httpListen: 192.168.2.105:10106
+  logPath: D:\GoProject\logs\
+  privateHttpListen: 0.0.0.0:8081
+  debug: true
+mysql:
+  user: root
+  password: 123456
+  host: 127.0.0.1
+  port: 3306
+  dbName: logs
+redis:
+  password: 123456
+  host: 127.0.0.1
+  port: 6379
