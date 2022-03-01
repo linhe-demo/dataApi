@@ -3,14 +3,13 @@ package logs
 import (
 	"dataApi/api/controller"
 	"dataApi/internal/service/logs"
-	"dataApi/params"
+	"dataApi/pkg/params"
 	"github.com/gin-gonic/gin"
 )
 
 func Log(ctx *gin.Context) {
 	var data = logs.Param{}
 	rsp := controller.MakeResponse()
-	//P := paramParse.NewParseRequest(ctx.Request)
 	err := params.Unpack(ctx.Request, &data)
 	if err != nil {
 		rsp.Code = controller.CodeParamFail

@@ -1,8 +1,11 @@
 package params
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
+	"io/ioutil"
+	"mime"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -13,50 +16,44 @@ const (
 	defaultMaxMemory = 32 << 20 // 32 MB
 )
 
-var data = make(map[string]interface{})
-
 // Unpack 从 HTTP 请求 req 的参数中提取数据填充到 ptr 指向结构体的各个字段
 func Unpack(req *http.Request, ptr interface{}) error {
 	if err := req.ParseForm(); err != nil {
 		return err
 	}
-
 	switch req.Method {
 	case "GET":
 		if err := analysisGet(req, ptr); err != nil {
 			return errors.Wrap(err, "param fail")
 		}
 	case "POST":
-		if req.Form != nil {
+		if len(req.Form) > 0 {
 			if err := analysisGet(req, ptr); err != nil {
 				return errors.Wrap(err, "param fail")
 			}
 		} else {
-
-			if req.Form == nil {
+			ct := req.Header.Get("Content-Type")
+			if ct == "" {
+				ct = "application/octet-stream"
+			}
+			ct, _, _ = mime.ParseMediaType(ct)
+			if ct == "application/json" { // 处理json格式数据
+				data, err := ioutil.ReadAll(req.Body)
+				if err != nil {
+					return errors.Wrap(err, "analysis json data fail")
+				}
+				_ = json.Unmarshal(data, ptr)
+			} else {
 				_ = req.ParseForm()
 				_ = req.ParseMultipartForm(defaultMaxMemory)
-			}
-
-			for k, v := range req.Form {
-				if len(v) > 0 {
-					SetMData(k, v[0])
+				if err := analysisGet(req, ptr); err != nil {
+					return errors.Wrap(err, "param fail")
 				}
 			}
-			fmt.Print(data)
-			//_ = req.ParseForm()
-			//_ = req.ParseMultipartForm(defaultMaxMemory)
-			//if err := analysisGet(req, ptr); err != nil {
-			//	return errors.Wrap(err, "param fail")
-			//}
 		}
-		//fmt.Println(req.Form)
-		//fmt.Println(req.PostForm)
-		//fmt.Println(req.Body)
 	default:
 		return errors.Wrap(nil, "Sorry, only GET and POST methods are supported.")
 	}
-
 	return nil
 }
 
@@ -80,7 +77,6 @@ func analysisGet(req *http.Request, ptr interface{}) error {
 		if !f.IsValid() {
 			continue // 忽略不能识别的 HTTP 参数
 		}
-
 		for _, value := range values {
 			if f.Kind() == reflect.Slice {
 				elem := reflect.New(f.Type().Elem()).Elem()
@@ -118,8 +114,4 @@ func populate(v reflect.Value, value string) error {
 		return fmt.Errorf("unsupported kind %s", v.Type())
 	}
 	return nil
-}
-
-func SetMData(name string, val interface{}) {
-	data[name] = val
 }
