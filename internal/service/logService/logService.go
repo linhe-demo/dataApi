@@ -1,7 +1,7 @@
-package logs
+package logService
 
 import (
-	"dataApi/internal/model/logs"
+	"dataApi/internal/model/logModel"
 	"github.com/pkg/errors"
 )
 
@@ -13,7 +13,7 @@ type Param struct {
 }
 
 func SaveLog(data Param) (out bool, err error) {
-	out, err = logs.InsertLog(data.Ip)
+	out, err = logModel.InsertLog(data.Ip)
 	if err != nil {
 		return out, errors.Wrap(err, "logService save failed")
 	}

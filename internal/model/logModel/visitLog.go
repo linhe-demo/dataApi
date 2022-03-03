@@ -1,4 +1,4 @@
-package logs
+package logModel
 
 import (
 	"dataApi/app"
@@ -21,7 +21,7 @@ func InsertLog(ip string) (out bool, err error) {
 	tx := app.MysqlClient.Model(VisitLog{}).Create(&info)
 
 	if tx.Error != nil {
-		return out, errors.Wrapf(tx.Error, "save log info failed ip %s date %s", ip, time.Now().Format(app.Datelayouttime))
+		return out, errors.Wrapf(tx.Error, "save log info failed ip %s date %s", ip, time.Now().Format(app.DatelayoutTime))
 	}
 	return true, nil
 }
