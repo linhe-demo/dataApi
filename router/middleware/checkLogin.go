@@ -13,10 +13,11 @@ import (
 )
 
 type CheckInfo struct {
-	Mould   int64 `json:"mould"`
-	Time    int64 `json:"time"`
-	UserID  int64 `json:"user_id"`
-	RandNum int64 `json:"rand_num"`
+	Mould    int64  `json:"mould"`
+	Time     int64  `json:"time"`
+	UserID   int64  `json:"user_id"`
+	RandNum  int64  `json:"rand_num"`
+	NickName string `json:"nick_name"`
 }
 
 // 开启token校验
@@ -57,6 +58,8 @@ func Chcek() gin.HandlerFunc {
 					timeNow := time.Now().Unix()
 					beginTime := mapResult.Time
 					tmpUserid := mapResult.UserID
+					tmpMould := mapResult.Mould
+					tmpNickName := mapResult.NickName
 					if randNum != tmpRandNum {
 						c.AbortWithStatus(401)
 						return
@@ -69,7 +72,7 @@ func Chcek() gin.HandlerFunc {
 							c.AbortWithStatus(401)
 							return
 						}
-						c.Set("userinfo", app.UserInfo{Uid: tmpUserid})
+						c.Set("userinfo", app.UserInfo{Uid: tmpUserid, Mould: tmpMould, NickName: tmpNickName})
 					}
 				} else {
 					c.AbortWithStatus(401)

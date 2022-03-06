@@ -8,10 +8,12 @@ const (
 
 	SuccessCode = 1
 
-	LoginKey = "yuQiCongYYds20220303"
+	LoginKey     = "yuQiCongYYds20220303"
+	UserRedisKey = "partygame-user-"
 )
 
 type UserInfo struct {
-	Uid   int64
-	Mould int64
+	Uid      int64
+	Mould    int64
+	NickName string
 }

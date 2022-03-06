@@ -26,6 +26,15 @@ func GetMouldID(ctx *gin.Context) int64 {
 	return mouldId
 }
 
+func GetNickName(ctx *gin.Context) string {
+	userinfo, exist := ctx.Get("userinfo")
+	var nickName string
+	if exist == true {
+		nickName = userinfo.(UserInfo).NickName
+	}
+	return nickName
+}
+
 func Wait(num float32) {
 	tmpTime := time.Duration(num * 1000000000)
 	time.Sleep(tmpTime)

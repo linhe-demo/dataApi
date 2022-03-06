@@ -64,13 +64,12 @@ func analysisGet(req *http.Request, ptr interface{}) error {
 	for i := 0; i < v.NumField(); i++ {
 		fieldInfo := v.Type().Field(i)
 		tag := fieldInfo.Tag
-		name := tag.Get("http")
+		name := tag.Get("json")
 		if name == "" {
 			name = strings.ToLower(fieldInfo.Name)
 		}
 		fields[name] = v.Field(i)
 	}
-
 	// 对请求中的每个参数更新结构体中对应的字段
 	for name, values := range req.Form {
 		f := fields[name]

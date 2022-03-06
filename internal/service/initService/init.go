@@ -21,34 +21,77 @@ type LunarDate struct {
 }
 
 type ConfigData struct {
+	Year          string `json:"year"`
+	Month         string `json:"month"`
+	NickName      string `json:"nick_name"`
+	CoverImg      string `json:"cover_img"`
+	FireWorkWords string `json:"fire_work_words"`
+	BlessChinese  string `json:"bless_chinese"`
+	BlessEnglish  string `json:"bless_english"`
+	BtnWords      string `json:"btn_words"`
+	BlessFestival string `json:"bless_festival"`
+	FestivalName  string `json:"festival_name"`
+	Flower        bool   `json:"flower"`
 }
 
 func GetInitData(ctx *gin.Context) (out ConfigData, err error) {
-	var (
-		festivalConfig []initModel.MouldFestival
-	)
-	uid := app.GetUserId(ctx)
+	var festivalConfig []initModel.Res
 	mouldId := app.GetMouldID(ctx)
+	out.NickName = app.GetNickName(ctx)
 	//检测模板是否合法
-	config, err := initModel.GetMouldInfo(mouldId)
+	_, err = initModel.GetMouldInfo(mouldId)
 	if err != nil {
 		return out, errors.Wrap(err, "get mould config fail")
 	}
 	//获取模板固定配置
+	mouldData, err := initModel.GetMouldData(mouldId)
 	date := time.Now().Format(app.DateLayout)
 	//获取今天的农历日期
 	lunarDate := getLunarCalendar(date)
+	out.Year = lunarDate.Year
+	out.Month = lunarDate.Month
 	//获取今天节日信息
 	festival := getFestivalInfo(date)
 	if len(festival) > app.DefaultInt { //获取节日配置
-		for _, v := range festival {
-			tmp, err := initModel.GetFestivalData(mouldId, v)
-			if err == nil && tmp.ID > 0 {
-				festivalConfig = append(festivalConfig, tmp)
-			}
+		festivalConfig, err = initModel.GetFestivalData(mouldId, festival[0])
+		out.FestivalName = festival[0]
+	} else {
+		//获取默认烟花语
+		firework, err := initModel.GetDefaultWordsInfo()
+		if err != nil {
+			return out, errors.Wrap(err, "get Default Words fail")
+		}
+		out.FireWorkWords = firework.Value
+	}
+	//检查节日配置是否存在
+	if len(festivalConfig) == 0 {
+		dealGreetingCardData(&out, mouldData)
+	} else {
+		dealGreetingCardData(&out, festivalConfig)
+	}
+	out.Flower = true
+	return out, nil
+}
+
+func dealGreetingCardData(out *ConfigData, data []initModel.Res) {
+	for _, v := range data {
+		switch v.Type {
+		case 1:
+			out.CoverImg = v.Value
+		case 2:
+			out.FireWorkWords = v.Value
+		case 3:
+			out.BlessChinese = v.Value
+		case 4:
+			out.BlessEnglish = v.Value
+		case 5:
+			out.BtnWords = v.Value
+		case 6:
+			out.BlessFestival = v.Value
+		case 7:
+			out.FestivalName = v.Value
 		}
 	}
-	return out, nil
 }
 
 func getLunarCalendar(date string) (out LunarDate) {

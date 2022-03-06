@@ -20,7 +20,7 @@ type BackInfo struct {
 func CheckUserInfo(ctx *gin.Context) (out BackInfo, err error) {
 	uid := app.GetUserId(ctx)
 	mouldId := app.GetMouldID(ctx)
-	if uid == app.DefaultInt {
+	if uid == app.DefaultInt || mouldId == app.DefaultInt {
 		out.Code = app.DefaultInt
 		out.Message = "用户id不存在"
 		return out, nil

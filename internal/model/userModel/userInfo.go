@@ -19,7 +19,7 @@ type UserInfo struct {
 var UserInfoNotFound = errors.New("user info not found")
 
 func GetUserInfo(uid int64, mouldId int64) (out UserInfo, err error) {
-	tx := app.MysqlClient.Where("ID = ? AND MouldID = ?", int(uid), int(mouldId)).Find(&out)
+	tx := app.MysqlClient.Where("id = ? AND mould_id = ?", int(uid), int(mouldId)).First(&out)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return out, UserInfoNotFound
 	} else if tx.Error != nil {
@@ -29,7 +29,7 @@ func GetUserInfo(uid int64, mouldId int64) (out UserInfo, err error) {
 }
 
 func UpdateUserLoginInfo(uid int64, mouldId int64) {
-	app.MysqlClient.Where("ID = ? AND MouldID = ?", int(uid), int(mouldId)).Update("login_date", time.Now().Format(app.DatelayoutTime))
+	app.MysqlClient.Model(UserInfo{}).Where("id = ? AND mould_id = ?", int(uid), int(mouldId)).Update("login_date", time.Now().Format(app.DatelayoutTime))
 }
 
 func CreateUserInfo(mouldId int64, nickName string) (uid int, err error) {
@@ -48,7 +48,7 @@ func CreateUserInfo(mouldId int64, nickName string) (uid int, err error) {
 }
 
 func GetUserInfoByNickName(nickName string) (out UserInfo, err error) {
-	tx := app.MysqlClient.Where("NickName ?", nickName).Find(&out)
+	tx := app.MysqlClient.Where("nick_name = ?", nickName).First(&out)
 	if tx.Error == gorm.ErrRecordNotFound {
 		return out, UserInfoNotFound
 	} else if tx.Error != nil {

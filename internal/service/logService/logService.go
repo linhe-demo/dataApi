@@ -1,19 +1,16 @@
 package logService
 
 import (
+	"dataApi/app"
 	"dataApi/internal/model/logModel"
+	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 )
 
-type Param struct {
-	Id   int    `json:"id"`
-	Date string `json:"date"`
-	Data string `json:"data"`
-	Ip   string `json:"ip"`
-}
-
-func SaveLog(data Param) (out bool, err error) {
-	out, err = logModel.InsertLog(data.Ip)
+func SaveLog(ctx *gin.Context, ip string) (out bool, err error) {
+	uid := app.GetUserId(ctx)
+	mouldId := app.GetMouldID(ctx)
+	out, err = logModel.InsertLog(uid, mouldId, ip)
 	if err != nil {
 		return out, errors.Wrap(err, "logService save failed")
 	}

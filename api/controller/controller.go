@@ -14,9 +14,9 @@ const (
 	CodeParamIpFail        = 10001
 	CodeParamIpFailMessage = "获取IP地址失败"
 
-	//登录相关
-	CodeLoginForbidden        = 20001
-	CodeLoginForbiddenMessage = "登录不被允许"
+	// CodeRegisterFail 注册相关
+	CodeRegisterFail        = 20001
+	CodeRegisterFailMessage = "注册失败"
 )
 
 type HttpResponse struct {

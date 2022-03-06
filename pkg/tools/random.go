@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-//生成若干个不重复的随机数
+// GenerateRandomNumber /*  生成某范围内若干个不重复的随机数 */
 func GenerateRandomNumber(start int, end int, count int) (nums map[int]int) {
 	//范围检查
 	if end < start || (end-start) < count {
@@ -25,7 +25,7 @@ func GenerateRandomNumber(start int, end int, count int) (nums map[int]int) {
 	return nums
 }
 
-//生成一个随机数
+// GenerateRandomSingleNumber 生成某范围内一个随机数
 func GenerateRandomSingleNumber(start int, end int, count int) (num int) {
 	//范围检查
 	if end < start || (end-start) < count {
@@ -36,4 +36,9 @@ func GenerateRandomSingleNumber(start int, end int, count int) (num int) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	num = r.Intn((end - start)) + start
 	return num
+}
+
+func GenerateRandom() (out int) {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(10000000000000)
 }

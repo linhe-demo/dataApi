@@ -34,12 +34,6 @@ func NewFestival(filename string) *Festival {
 func (f *Festival) GetFestivals(solarDay string) (festivals []string) {
 	festivals = []string{}
 	loc, _ := time.LoadLocation("Local")
-
-	//处理公历节日
-	tempDate, _ := time.ParseInLocation(DATELAYOUT, solarDay, loc)
-	for _, festival := range processRule(tempDate, MONTH_SOLAR_FESTIVAL, false, solarDay) {
-		festivals = append(festivals, festival)
-	}
 	//处理农历节日
 	lunarDate, isLeapMonth := solarlunar.SolarToLuanr(solarDay)
 	if !isLeapMonth {
@@ -47,6 +41,11 @@ func (f *Festival) GetFestivals(solarDay string) (festivals []string) {
 		for _, festival := range processRule(tempDate, MONTH_LUNAR_FESTIVAL, true, solarDay) {
 			festivals = append(festivals, festival)
 		}
+	}
+	//处理公历节日
+	tempDate, _ := time.ParseInLocation(DATELAYOUT, solarDay, loc)
+	for _, festival := range processRule(tempDate, MONTH_SOLAR_FESTIVAL, false, solarDay) {
+		festivals = append(festivals, festival)
 	}
 	return
 }
