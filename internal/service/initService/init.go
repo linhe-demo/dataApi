@@ -5,6 +5,7 @@ import (
 	"dataApi/internal/model/initModel"
 	f "dataApi/pkg/festival"
 	"dataApi/pkg/lunar"
+	"dataApi/pkg/tools"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"strings"
@@ -54,7 +55,10 @@ func GetInitData(ctx *gin.Context) (out ConfigData, err error) {
 	festival := getFestivalInfo(date)
 	if len(festival) > app.DefaultInt { //获取节日配置
 		festivalConfig, err = initModel.GetFestivalData(mouldId, festival[0])
-		out.FestivalName = festival[0]
+		if festival[0] == "女王" {
+			out.Flower = true
+		}
+		out.FestivalName = tools.InsertStringSpecialCharacter(festival[0], "|")
 	} else {
 		//获取默认烟花语
 		firework, err := initModel.GetDefaultWordsInfo()
@@ -69,7 +73,6 @@ func GetInitData(ctx *gin.Context) (out ConfigData, err error) {
 	} else {
 		dealGreetingCardData(&out, festivalConfig)
 	}
-	out.Flower = true
 	return out, nil
 }
 
@@ -79,7 +82,7 @@ func dealGreetingCardData(out *ConfigData, data []initModel.Res) {
 		case 1:
 			out.CoverImg = v.Value
 		case 2:
-			out.FireWorkWords = v.Value
+			out.FireWorkWords = tools.InsertStringSpecialCharacter(v.Value, "|")
 		case 3:
 			out.BlessChinese = v.Value
 		case 4:
