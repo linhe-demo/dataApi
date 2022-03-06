@@ -7,10 +7,10 @@ WORKDIR $GOPATH/src
 RUN git clone https://github.com/linhe-demo/dataApi.git
 
 #添加配置文件
-ADD ./config.ini $GOPATH/src/dataApi
+ADD ./config.ini $GOPATH/src/data-api
 
 #切换工作目录
-WORKDIR $GOPATH/src/dataApi
+WORKDIR $GOPATH/src/data-api
 
 #设置代理
 ENV GOPROXY https://goproxy.io
@@ -22,4 +22,4 @@ RUN go build .
 EXPOSE 9001
 
 #最终运行docker的命令
-ENTRYPOINT  ["./dataApi"]
+ENTRYPOINT  ["./data-api"]
