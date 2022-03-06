@@ -65,7 +65,7 @@ func GetInitData(ctx *gin.Context) (out ConfigData, err error) {
 		if err != nil {
 			return out, errors.Wrap(err, "get Default Words fail")
 		}
-		out.FireWorkWords = firework.Value
+		out.FireWorkWords = tools.InsertStringSpecialCharacter(firework.Value, "|")
 	}
 	//检查节日配置是否存在
 	if len(festivalConfig) == 0 {
