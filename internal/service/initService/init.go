@@ -106,7 +106,7 @@ func getLunarCalendar(date string) (out LunarDate) {
 }
 
 func getFestivalInfo(date string) (out []string) {
-	festival := f.NewFestival("../pkg/festival/festival.json")
+	festival := f.NewFestival("/home/linhe/www/golang/dataApi/pkg/festival/festival.json")
 	out = festival.GetFestivals(date)
 	return out
 }
