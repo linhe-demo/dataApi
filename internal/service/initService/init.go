@@ -55,9 +55,6 @@ func GetInitData(ctx *gin.Context) (out ConfigData, err error) {
 	festival := getFestivalInfo(date)
 	if len(festival) > app.DefaultInt { //获取节日配置
 		festivalConfig, err = initModel.GetFestivalData(mouldId, festival[0])
-		if festival[0] == "女王" {
-			out.Flower = true
-		}
 		out.FestivalName = tools.InsertStringSpecialCharacter(festival[0], "|")
 	} else {
 		//获取默认烟花语
@@ -93,6 +90,10 @@ func dealGreetingCardData(out *ConfigData, data []initModel.Res) {
 			out.BlessFestival = v.Value
 		case 7:
 			out.FestivalName = v.Value
+		case 8:
+			if v.Value == "1" {
+				out.Flower = true
+			}
 		}
 	}
 }
