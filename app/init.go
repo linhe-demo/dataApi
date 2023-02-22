@@ -4,6 +4,7 @@ import (
 	"context"
 	"dataApi/conf"
 	"dataApi/logs"
+	"dataApi/pkg/bloomfilter"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
@@ -19,6 +20,7 @@ import (
 var (
 	MysqlClient *gorm.DB
 	RedisClient *redis.Client
+	BloomClient *bloomfilter.BloomFilter
 )
 
 func Init() {
@@ -26,6 +28,7 @@ func Init() {
 	logs.InitLogger()
 	initMysqlDb()
 	initRedis()
+	initBloom()
 }
 
 func initMysqlDb() {
@@ -90,4 +93,8 @@ func initRedis() {
 
 	pong, err := RedisClient.Ping(context.TODO()).Result()
 	logs.Logger.Infow("redis init:", "pong", pong, "err", err)
+}
+
+func initBloom() {
+	BloomClient = bloomfilter.NewBloomFilter()
 }

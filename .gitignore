@@ -2,3 +2,6 @@
 go.mod
 go.sum
 .idea
+demo.*
+test/*
+protobuf/*
